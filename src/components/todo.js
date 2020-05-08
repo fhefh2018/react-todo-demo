@@ -36,6 +36,7 @@ export default class Todo extends React.Component {
                         type="checkbox"
                         className="toggle"
                         onChange={this.handleChangeStatus.bind(this, value.id)}
+                        checked={value.status === 1 ? true : false}
                       />
                       <label>{value.content}</label>
                       <button
@@ -51,7 +52,12 @@ export default class Todo extends React.Component {
           </section>
           <footer className="footer">
             <span className="todo-count"></span>
-            <button className="clear-completed">Clear completed</button>
+            <button
+              className="clear-completed"
+              onClick={this.handleClear.bind(this)}
+            >
+              Clear completed
+            </button>
           </footer>
         </section>
       </div>
@@ -115,6 +121,24 @@ export default class Todo extends React.Component {
 
     this.setState({
       todo: todo,
+    });
+  }
+
+  handleClear() {
+    let todo = this.state.todo;
+    console.log("before: ", todo);
+
+    let result = todo.filter((value, index) => {
+      if (1 != value.status) {
+        todo.splice(index, 1);
+        return value;
+      }
+    });
+
+    console.log("after: ", result);
+
+    this.setState({
+      todo: result,
     });
   }
 }
