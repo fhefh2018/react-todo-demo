@@ -3,7 +3,12 @@ import React from "react";
 export default class Todo extends React.Component {
   constructor() {
     super();
-    this.state = { todo: [], value: "" };
+    this.state = {
+      todo: [],
+      filterTodo: [],
+      value: "",
+      select: "ALL",
+    };
   }
   render() {
     return (
@@ -21,7 +26,7 @@ export default class Todo extends React.Component {
               value={this.state.value}
             />
           </header>
-          <section className="main">
+          <section className="main" style={{ display: `${this.state.todo.length ? 'block' : 'none'}` }}>
             <input id="toggle-all" className="toggle-all" type="checkbox" />
             <label htmlFor="toggle-all"></label>
             <ul className="todo-list">
@@ -50,8 +55,21 @@ export default class Todo extends React.Component {
               })}
             </ul>
           </section>
-          <footer className="footer">
-            <span className="todo-count"></span>
+          <footer className="footer" style={{ display: `${this.state.todo.length ? 'block' : 'none'}` }}>
+            <span className="todo-count">
+              <strong>{this.state.todo.length}</strong> item left
+            </span>
+            <ul className="filters">
+              <li>
+                <a href="#/all" className={`${this.state.select === "ALL" ? "selected" : ""}`} onClick={this.handleSelect.bind(this, "ALL")}>All</a>
+              </li>
+              <li>
+                <a href="#/active" className={`${this.state.select === "ACTIVE" ? "selected" : ""}`} onClick={this.handleSelect.bind(this, "ACTIVE")}>Active</a>
+              </li>
+              <li>
+                <a href="#/completed" className={`${this.state.select === "COMPLETED" ? "selected" : ""}`} onClick={this.handleSelect.bind(this, "COMPLETED")} >Completed</a>
+              </li>
+            </ul>
             <button
               className="clear-completed"
               onClick={this.handleClear.bind(this)}
@@ -97,6 +115,7 @@ export default class Todo extends React.Component {
 
       this.setState({
         todo: newTodo,
+        filterTodo: newTodo,
         value: "",
       });
     }
@@ -125,20 +144,60 @@ export default class Todo extends React.Component {
   }
 
   handleClear() {
-    let todo = this.state.todo;
-    console.log("before: ", todo);
+    // let todo = this.state.todo;
+    // console.log("before: ", todo);
 
-    let result = todo.filter((value, index) => {
-      if (1 != value.status) {
-        todo.splice(index, 1);
-        return value;
-      }
-    });
+    // let result = todo.filter((value, index) => {
+    //   if (1 !== value.status) {
+    //     todo.splice(index, 1);
+    //     return value;
+    //   }
+    // });
 
-    console.log("after: ", result);
+    // this.setState({
+    //   todo: result,
+    // });
+    this.filterType("COMPLETED");
+  }
+
+  handleSelect(select) {
 
     this.setState({
-      todo: result,
+      select
+    })
+    this.filterType(select);
+  }
+
+  filterType = (type) => {
+    const todo = this.state.filterTodo;
+
+    switch (type) {
+      case "ALL":
+        this.setState({
+          todo: todo
+        });
+        break;
+      case "ACTIVE":
+        this.todoFilter(0);
+        break;
+      case "COMPLETED":
+        this.todoFilter(1);
+        break;
+      default:
+        this.setState({
+          todo: todo
+        });
+    }
+  }
+
+  todoFilter = (type) => {
+    const todo = this.state.todo;
+    let result = [];
+    todo.map((value) => {
+      if (value.status === type) {
+        result.push(value);
+      }
     });
+    return result;
   }
 }
