@@ -26,7 +26,10 @@ export default class Todo extends React.Component {
               value={this.state.value}
             />
           </header>
-          <section className="main" style={{ display: `${this.state.todo.length ? 'block' : 'none'}` }}>
+          <section
+            className="main"
+            style={{ display: `${this.state.todo.length ? "block" : "none"}` }}
+          >
             <input id="toggle-all" className="toggle-all" type="checkbox" />
             <label htmlFor="toggle-all"></label>
             <ul className="todo-list">
@@ -55,19 +58,46 @@ export default class Todo extends React.Component {
               })}
             </ul>
           </section>
-          <footer className="footer" style={{ display: `${this.state.todo.length ? 'block' : 'none'}` }}>
+          <footer
+            className="footer"
+            style={{
+              display: `${this.state.filterTodo.length ? "block" : "none"}`,
+            }}
+          >
             <span className="todo-count">
               <strong>{this.state.todo.length}</strong> item left
             </span>
             <ul className="filters">
               <li>
-                <a href="#/all" className={`${this.state.select === "ALL" ? "selected" : ""}`} onClick={this.handleSelect.bind(this, "ALL")}>All</a>
+                <a
+                  href="#/all"
+                  className={`${this.state.select === "ALL" ? "selected" : ""}`}
+                  onClick={this.handleSelect.bind(this, "ALL")}
+                >
+                  All
+                </a>
               </li>
               <li>
-                <a href="#/active" className={`${this.state.select === "ACTIVE" ? "selected" : ""}`} onClick={this.handleSelect.bind(this, "ACTIVE")}>Active</a>
+                <a
+                  href="#/active"
+                  className={`${
+                    this.state.select === "ACTIVE" ? "selected" : ""
+                  }`}
+                  onClick={this.handleSelect.bind(this, "ACTIVE")}
+                >
+                  Active
+                </a>
               </li>
               <li>
-                <a href="#/completed" className={`${this.state.select === "COMPLETED" ? "selected" : ""}`} onClick={this.handleSelect.bind(this, "COMPLETED")} >Completed</a>
+                <a
+                  href="#/completed"
+                  className={`${
+                    this.state.select === "COMPLETED" ? "selected" : ""
+                  }`}
+                  onClick={this.handleSelect.bind(this, "COMPLETED")}
+                >
+                  Completed
+                </a>
               </li>
             </ul>
             <button
@@ -136,6 +166,7 @@ export default class Todo extends React.Component {
       if (value.id === id) {
         value.status = status;
       }
+      return value;
     });
 
     this.setState({
@@ -144,60 +175,66 @@ export default class Todo extends React.Component {
   }
 
   handleClear() {
-    // let todo = this.state.todo;
-    // console.log("before: ", todo);
+    let afterClearTodo = this.state.todo.filter((value) => {
+      if (value.status !== 1) {
+        return value;
+      }
+    });
 
-    // let result = todo.filter((value, index) => {
-    //   if (1 !== value.status) {
-    //     todo.splice(index, 1);
-    //     return value;
-    //   }
-    // });
-
-    // this.setState({
-    //   todo: result,
-    // });
-    this.filterType("COMPLETED");
+    if (afterClearTodo.length) {
+      this.setState({
+        todo: afterClearTodo,
+        filterTodo: afterClearTodo,
+      });
+    }
   }
 
   handleSelect(select) {
-
     this.setState({
-      select
-    })
+      select,
+    });
     this.filterType(select);
   }
 
   filterType = (type) => {
-    const todo = this.state.filterTodo;
+    // const todo = this.state.todo;
+    const filterTodo = this.state.filterTodo;
 
     switch (type) {
       case "ALL":
         this.setState({
-          todo: todo
+          todo: filterTodo,
         });
+        console.log("ALL: ", filterTodo);
         break;
       case "ACTIVE":
-        this.todoFilter(0);
+        let activeResult = this.todoFilter(0);
+        this.setState({
+          todo: activeResult,
+        });
+        console.log("ACTIVE: ", activeResult);
         break;
       case "COMPLETED":
-        this.todoFilter(1);
+        let completedResult = this.todoFilter(1);
+        this.setState({
+          todo: completedResult,
+        });
+        console.log("COMPLETED: ", completedResult);
         break;
       default:
         this.setState({
-          todo: todo
+          todo: filterTodo,
         });
     }
-  }
+  };
 
   todoFilter = (type) => {
-    const todo = this.state.todo;
-    let result = [];
-    todo.map((value) => {
+    const todo = this.state.filterTodo;
+    let result = todo.filter((value) => {
       if (value.status === type) {
-        result.push(value);
+        return value;
       }
     });
     return result;
-  }
+  };
 }
