@@ -69,27 +69,25 @@ export default class Todo extends React.Component {
             </span>
             <ul className="filters">
               <li>
-                <a
-                  href="#/all"
+                <span
                   className={`${this.state.select === "ALL" ? "selected" : ""}`}
                   onClick={this.handleSelect.bind(this, "ALL")}
                 >
                   All
-                </a>
+                </span>
               </li>
               <li>
-                <a
-                  href="#/active"
+                <span
                   className={`${
                     this.state.select === "ACTIVE" ? "selected" : ""
                   }`}
                   onClick={this.handleSelect.bind(this, "ACTIVE")}
                 >
                   Active
-                </a>
+                </span>
               </li>
               <li>
-                <a
+                <span
                   href="#/completed"
                   className={`${
                     this.state.select === "COMPLETED" ? "selected" : ""
@@ -97,7 +95,7 @@ export default class Todo extends React.Component {
                   onClick={this.handleSelect.bind(this, "COMPLETED")}
                 >
                   Completed
-                </a>
+                </span>
               </li>
             </ul>
             <button
